@@ -1,0 +1,144 @@
+:root {
+  --primary: #2e7d32;      /* Verde Folha (Principal) */
+  --secondary: #007bff;    /* Azul Ação */
+  --accent: #ffc107;       /* Amarelo Edição */
+  --danger: #dc3545;       /* Vermelho Perigo */
+  --bg: #f8f9fa;           /* Fundo Cinza Claro */
+  --text: #212529;         /* Texto Escuro */
+  --white: #ffffff;
+  --radius: 12px;          /* Arredondamento padrão */
+  --shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  --shadow-hover: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+  margin: 0;
+  padding: 0;
+  line-height: 1.5;
+}
+
+/* --- LAYOUT --- */
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+  padding-bottom: 100px; /* Espaço pro carrinho */
+}
+
+/* --- CARDS (Cartões Brancos Bonitos) --- */
+.card {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 15px;
+  box-shadow: var(--shadow);
+  border: 1px solid #eaeaea;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-hover);
+}
+
+.grid-products {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 20px;
+}
+
+/* --- BOTÕES (O toque de classe) --- */
+button {
+  cursor: pointer;
+  font-weight: 600;
+  border-radius: 8px;
+  transition: all 0.2s;
+  border: none;
+}
+
+button:active {
+  transform: scale(0.96);
+}
+
+.btn-primary { background: var(--primary); color: white; padding: 10px 20px; }
+.btn-secondary { background: var(--secondary); color: white; padding: 8px 15px; }
+.btn-danger { background: var(--danger); color: white; padding: 8px; }
+.btn-outline { border: 1px solid #ccc; background: transparent; color: #666; padding: 5px 10px; }
+
+/* Botões de + e - */
+.btn-icon { width: 32px; height: 32px; display: inline-flex; align-items: center; justifyContent: center; padding: 0; }
+
+/* --- FORMULÁRIOS --- */
+input, select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fff;
+  font-size: 16px;
+  box-sizing: border-box; /* Importante para não quebrar layout */
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
+}
+
+label {
+  font-weight: 500;
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 5px;
+  display: block;
+}
+
+/* --- ABAS DE FILTRO --- */
+.tabs-container {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 10px;
+  scrollbar-width: none; /* Esconde barra no Firefox */
+}
+.tabs-container::-webkit-scrollbar { display: none; } /* Esconde no Chrome */
+
+.tab-btn {
+  padding: 8px 20px;
+  border-radius: 50px;
+  white-space: nowrap;
+  background: #e9ecef;
+  color: #444;
+}
+.tab-btn.active {
+  background: var(--primary);
+  color: white;
+  box-shadow: 0 2px 5px rgba(46, 125, 50, 0.3);
+}
+
+/* --- BARRA FLUTUANTE (Carrinho) --- */
+.cart-bar {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 600px;
+  background: var(--white);
+  padding: 15px 25px;
+  border-radius: 50px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  border: 1px solid #eee;
+}
+
+/* --- TEXTOS --- */
+h1, h2, h3 { color: var(--primary); margin-top: 0; }
+a { text-decoration: none; color: inherit; }
+.text-price { color: var(--primary); font-weight: 700; font-size: 1.1rem; }
+.text-unit { font-size: 0.8rem; color: #888; font-weight: normal; }
