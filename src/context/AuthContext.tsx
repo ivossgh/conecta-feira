@@ -4,7 +4,7 @@ import type { User } from '@supabase/supabase-js';
 
 interface AuthContextType {
   user: User | null;
-  userType: 'cliente' | 'produtor' | null; // Novo campo
+  userType: 'cliente' | 'produtor' | null;
   isLoading: boolean;
 }
 
@@ -16,40 +16,61 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Função para buscar o tipo de usuário no banco de dados
+    // 1. Função blindada para buscar o perfil
     const fetchUserProfile = async (currentUser: User) => {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('user_type')
-        .eq('id', currentUser.id)
-        .single();
-        
-      if (!error && data) {
-        setUserType(data.user_type as 'cliente' | 'produtor');
-      } else {
+      try {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('user_type')
+          .eq('id', currentUser.id)
+          .single();
+          
+        if (!error && data) {
+          setUserType(data.user_type as 'cliente' | 'produtor');
+        } else {
+          setUserType(null);
+        }
+      } catch (err) {
+        console.error("Erro isolado ao buscar perfil:", err);
         setUserType(null);
       }
     };
 
-    // 1. Busca a sessão ativa ao carregar a aplicação
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        await fetchUserProfile(session.user);
+    // 2. Busca a sessão inicial com garantia de finalização
+    const initializeSession = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        setUser(session?.user ?? null);
+        if (session?.user) {
+          await fetchUserProfile(session.user);
+        }
+      } catch (error) {
+        console.error("Erro ao carregar sessão inicial:", error);
+      } finally {
+        setIsLoading(false); // <--- GARANTIA: O loading SOME aconteça o que acontecer
       }
-      setIsLoading(false);
-    });
+    };
+    
+    initializeSession();
 
-    // 2. Escuta alterações em tempo real (login, logout, token expirado)
+    // 3. Escuta alterações em tempo real (login, logout)
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      // Ignora o evento INITIAL_SESSION para não conflitar com a busca inicial
+      if (_event === 'INITIAL_SESSION') return;
+      
       setIsLoading(true);
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        await fetchUserProfile(session.user);
-      } else {
-        setUserType(null);
+      try {
+        setUser(session?.user ?? null);
+        if (session?.user) {
+          await fetchUserProfile(session.user);
+        } else {
+          setUserType(null);
+        }
+      } catch (error) {
+        console.error("Erro na mudança de status:", error);
+      } finally {
+        setIsLoading(false); // <--- GARANTIA DE DESTRAVAMENTO DA TELA
       }
-      setIsLoading(false);
     });
 
     return () => subscription.unsubscribe();
