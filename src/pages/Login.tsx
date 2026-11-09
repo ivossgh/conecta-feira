@@ -45,33 +45,30 @@ export default function Login() {
 
     try {
       if (isSignUp) {
-        // 1. Cria o usuário no Supabase Auth
+        // 1. Cria o usuário enviando os dados de perfil nos metadados (options.data)
         const { data: authData, error: authError } = await supabase.auth.signUp({
           email,
           password,
+          options: {
+            data: {
+              full_name: fullName,
+              user_type: userType, // 'cliente' ou 'produtor'
+            },
+          },
         });
 
         if (authError) throw authError;
 
-        // 2. FORÇA a inserção/atualização com o tipo correto usando UPSERT
-        if (authData.user) {
-          const { error: profileError } = await supabase
-            .from('profiles')
-            .upsert({ 
-              id: authData.user.id,          // Garante que é o ID certo
-              full_name: fullName, 
-              user_type: userType            // 'cliente' ou 'produtor'
-            });
-            
-          if (profileError) {
-            console.error('Erro no perfil:', profileError);
-            throw new Error('Erro ao salvar o tipo de conta.');
-          }
+        // 2. Trata o retorno com base na sessão
+        if (authData.session) {
+          // Confirmação de e-mail desativada (login automático)
+          alert('Conta criada com sucesso! Bem-vindo(a) ao Conecta Feira.');
+          redirectBasedOnRole(authData.user!.id);
+        } else if (authData.user) {
+          // Confirmação de e-mail ativada (requer verificação na caixa de entrada)
+          alert('Conta criada com sucesso! Enviamos um e-mail de confirmação para você.');
+          setIsSignUp(false);
         }
-
-        alert('Conta criada com sucesso! Bem-vindo(a) ao Conecta Feira.');
-        if (authData.user) redirectBasedOnRole(authData.user.id);
-
       } else {
         // Apenas faz o Login
         const { data, error } = await supabase.auth.signInWithPassword({

@@ -17,9 +17,13 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/loja/:id" element={<ProducerStore />} />
 
-        {/* Rotas Privadas (Exigem Autenticação) */}
-        <Route element={<ProtectedRoute />}>
+        {/* Rotas Privadas EXCLUSIVAS para Produtores */}
+        <Route element={<ProtectedRoute requiredRole="produtor" />}>
           <Route path="/painel" element={<ProducerDashboard />} />
+        </Route>
+
+        {/* Rotas Privadas EXCLUSIVAS para Clientes */}
+        <Route element={<ProtectedRoute requiredRole="cliente" />}>
           <Route path="/minhas-compras" element={<CustomerOrders />} />
         </Route>
       </Routes>
