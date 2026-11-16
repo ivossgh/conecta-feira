@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import ProductForm from '../ProductForm';
 import ProfileEdit from '../ProfileEdit';
 import MyProducts from '../MyProducts';
+import PixEdit from '../PixEdit';
 
 export default function ProducerDashboard() {
   const navigate = useNavigate();
@@ -65,6 +66,10 @@ export default function ProducerDashboard() {
       
       {/* Perfil */}
       <ProfileEdit />
+
+      {/* Chave PIX */}
+      <PixEdit />
+
       <hr style={{ margin: '20px 0' }} />
 
       {/* ABA PRODUTOS */}
