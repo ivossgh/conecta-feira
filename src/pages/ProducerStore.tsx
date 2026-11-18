@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
@@ -127,6 +126,18 @@ export default function ProducerStore() {
       return alert('Por favor, preencha seu Nome e WhatsApp para continuarmos!');
     }
 
+    // Limpa tudo que não for número (espaços, traços, parênteses, etc.)
+    const cleanPhone = producerPhone.replace(/\D/g, '');
+
+    if (!cleanPhone) {
+      return alert('Número de WhatsApp do produtor inválido!');
+    }
+
+    // Garante que o DDI 55 não fique duplicado se já existir no cadastro
+    const whatsappNumber = cleanPhone.startsWith('55') && cleanPhone.length >= 12
+      ? cleanPhone
+      : `55${cleanPhone}`;
+
     setIsCheckingOut(true);
 
     try {
@@ -173,7 +184,7 @@ export default function ProducerStore() {
       msg += `📍 *Status:* Pedido registrado no sistema!`;
 
       window.open(
-        `https://wa.me/55${producerPhone}?text=${encodeURIComponent(msg)}`,
+        `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`,
         '_blank'
       );
 
