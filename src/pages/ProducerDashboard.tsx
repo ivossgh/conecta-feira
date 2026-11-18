@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { useNavigate } from 'react-router-dom';
@@ -57,9 +58,38 @@ export default function ProducerDashboard() {
     <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
         <h3>Painel do Produtor</h3>
-        <button onClick={handleLogout} style={{ padding: '8px 15px', backgroundColor: '#dc3545', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>
-          Sair
-        </button>
+
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <button
+            onClick={() => navigate('/')}
+            style={{
+              padding: '8px 15px',
+              backgroundColor: 'var(--primary)',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              fontWeight: 'bold'
+            }}
+          >
+            🏠 Página Inicial
+          </button>
+
+          <button
+            onClick={handleLogout}
+            style={{
+              padding: '8px 15px',
+              backgroundColor: '#dc3545',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              fontWeight: 'bold'
+            }}
+          >
+            Sair
+          </button>
+        </div>
       </div>
 
       <p style={{ color: '#666', marginBottom: '20px' }}>Bem-vindo, {userEmail}</p>
